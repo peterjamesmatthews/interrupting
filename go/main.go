@@ -18,17 +18,17 @@ func main() {
 
 	s.Handle(
 		"GET /v2/sleep/{n}/echo/{message}",
-		http.TimeoutHandler(handleSleepEcho, 1*time.Second, "Server Timeout"),
+		http.TimeoutHandler(handleSleepEcho, 2*time.Second, "Server Timeout"),
 	)
 
 	s.Handle(
 		"GET /v3/sleep/{n}/echo/{message}",
-		http.TimeoutHandler(handleSleepEcho3, 1*time.Second, "Server Timeout"),
+		http.TimeoutHandler(handleSleepEcho3, 2*time.Second, "Server Timeout"),
 	)
 
 	s.Handle(
 		"GET /v4/sleep/{n}/echo/{message}",
-		http.TimeoutHandler(handleSleepEcho4, 1*time.Second, "Server Timeout"),
+		http.TimeoutHandler(handleSleepEcho4, 2*time.Second, "Server Timeout"),
 	)
 
 	log.Default().Printf("Starting server on port 8080")
@@ -84,7 +84,6 @@ var handleSleepEcho3 = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	start := time.Now()
 	deadline, ok := r.Context().Deadline()
 	for time.Since(start) < time.Duration(n)*time.Second {
-
 		if ok && time.Now().After(deadline) {
 			log.Printf("Request cancelled")
 			return
