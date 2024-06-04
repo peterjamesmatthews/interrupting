@@ -14,4 +14,4 @@ RUN pipenv install
 
 COPY . .
 
-CMD pipenv run flask --app main.py run
+CMD pipenv run flask --debug --app main.py run --host 0.0.0.0
