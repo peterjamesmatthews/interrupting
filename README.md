@@ -1,10 +1,5 @@
 # Interrupting
 
-Two big takeaway(s):
-
-- Interrupting is useful, but can also be rude and unsafe.
-- Cooperative multitasking is a cleaner approach.
-
 ## Usage
 
 1. Checkout repository.
