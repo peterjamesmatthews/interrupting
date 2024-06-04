@@ -5,22 +5,24 @@ Two big takeaway(s):
 - Interrupting is useful, but can also be rude and unsafe.
 - Cooperative multitasking is a cleaner approach.
 
-## Concepts
+## Usage
 
-1. Client-side timeouts
-  - axios timeout
-  - requests timeout
-  - http/net timeout
-2. Server timeouts
-  - flask with multi-thread
-3. Server interrupts
-  - flask with unsafe exception raise
-  - flask with early return
-  - go deadlines
-  - go done channel and pipelines
+1. Checkout repository.
+2. `make`
 
-## Example
+## Development
 
-Client requests (I/O) expensive (long-running) data from a server.
+1. Checkout repository.
+2. Verify go is installed.
 
-Fibonacci O(2^n)
+```sh
+brew install go
+```
+
+3. Verify [`pipenv` is installed](https://pipenv.pypa.io/en/latest/installation.html).
+
+```sh
+pip install pipenv --user # installs pipenv to your user's home directory
+```
+
+4. `make dev`

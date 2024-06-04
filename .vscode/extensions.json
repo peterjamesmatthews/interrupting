@@ -5,6 +5,7 @@
     "golang.go",
     "ms-azuretools.vscode-docker",
     "redhat.vscode-yaml",
-    "charliermarsh.ruff"
+    "charliermarsh.ruff",
+    "yzhang.markdown-all-in-one"
   ]
 }
