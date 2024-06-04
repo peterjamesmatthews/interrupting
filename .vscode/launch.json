@@ -12,7 +12,8 @@
       "autoStartBrowser": false,
       "env": {
         "FLASK_APP": "py/main.py",
-        "FLASK_DEBUG": "1"
+        "FLASK_DEBUG": "1",
+        "FLASK_RUN_PORT": "5001"
       },
       "jinja": true,
       "module": "flask",
