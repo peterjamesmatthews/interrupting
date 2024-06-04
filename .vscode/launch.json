@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "mode": "debug",
+      "name": "go",
+      "program": "${workspaceFolder}/go/main.go",
+      "request": "launch",
+      "type": "go"
+    },
+    {
+      "args": ["run", "--no-debugger"],
+      "autoStartBrowser": false,
+      "env": {
+        "FLASK_APP": "py/main.py",
+        "FLASK_DEBUG": "1"
+      },
+      "jinja": true,
+      "module": "flask",
+      "name": "py",
+      "request": "launch",
+      "type": "debugpy"
+    }
+  ],
+  "version": "0.2.0"
+}
