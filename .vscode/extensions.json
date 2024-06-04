@@ -1,3 +1,10 @@
 {
-  "recommendations": ["tamasfe.even-better-toml", "ms-python.python"]
+  "recommendations": [
+    "tamasfe.even-better-toml",
+    "ms-python.python",
+    "golang.go",
+    "ms-azuretools.vscode-docker",
+    "redhat.vscode-yaml",
+    "charliermarsh.ruff"
+  ]
 }
