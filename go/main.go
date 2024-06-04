@@ -11,21 +11,25 @@ import (
 func main() {
 	s := http.NewServeMux()
 
+	// v1 - no timeout
 	s.Handle(
 		"GET /v1/sleep/{n}/echo/{message}",
 		handleSleepEcho,
 	)
 
+	// v2 - timeout using http.TimeoutHandler, still executes
 	s.Handle(
 		"GET /v2/sleep/{n}/echo/{message}",
 		http.TimeoutHandler(handleSleepEcho, 2*time.Second, "Server Timeout"),
 	)
 
+	// v3 - timeout using http.TimeoutHandler and context.Deadline(), doesn't execute
 	s.Handle(
 		"GET /v3/sleep/{n}/echo/{message}",
 		http.TimeoutHandler(handleSleepEcho3, 2*time.Second, "Server Timeout"),
 	)
 
+	// v4 - timeout using context.Done(), doesn't execute
 	s.Handle(
 		"GET /v4/sleep/{n}/echo/{message}",
 		http.TimeoutHandler(handleSleepEcho4, 2*time.Second, "Server Timeout"),
@@ -33,25 +37,6 @@ func main() {
 
 	log.Default().Printf("Starting server on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", s))
-}
-
-// extractPathValues extracts the "n" and "message" values from the url path.
-func extractPathValues(r *http.Request) (int, string, error) {
-	// extract positive integer "n" from url path
-	n, err := strconv.Atoi(r.PathValue("n"))
-	if err != nil {
-		return 0, "", fmt.Errorf("invalid sleep value: %v", err)
-	} else if n < 0 {
-		return 0, "", fmt.Errorf("sleep value (%d) must be positive", n)
-	}
-
-	// extract non-empty string "message" from url path
-	message := r.PathValue("message")
-	if message == "" {
-		return 0, "", fmt.Errorf("message is required")
-	}
-
-	return n, message, nil
 }
 
 // handleSleepEcho synchronously sleeps for "n" seconds and then writes the "message" to the response.
@@ -116,3 +101,22 @@ var handleSleepEcho4 = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 		log.Printf("Request cancelled")
 	}
 })
+
+// extractPathValues extracts the "n" and "message" values from the url path.
+func extractPathValues(r *http.Request) (int, string, error) {
+	// extract positive integer "n" from url path
+	n, err := strconv.Atoi(r.PathValue("n"))
+	if err != nil {
+		return 0, "", fmt.Errorf("invalid sleep value: %v", err)
+	} else if n < 0 {
+		return 0, "", fmt.Errorf("sleep value (%d) must be positive", n)
+	}
+
+	// extract non-empty string "message" from url path
+	message := r.PathValue("message")
+	if message == "" {
+		return 0, "", fmt.Errorf("message is required")
+	}
+
+	return n, message, nil
+}
