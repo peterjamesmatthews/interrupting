@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 @app.route("/v1/sleep/<string:num>/echo/<string:msg>")
 def sleep_echo_1(num: str, msg: str):
+    """No timeout."""
     time.sleep(float(num))
     return msg
 
@@ -15,29 +16,18 @@ def sleep_echo_1(num: str, msg: str):
 @app.route("/v2/sleep/<string:num>/echo/<string:msg>")
 @timeout(1)
 def sleep_echo_2(num: str, msg: str):
+    """With timeout."""
     time.sleep(float(num))
-    app.logger.debug("Slept")
+    app.logger.debug("Slept")  # will still execute after timeout
     return msg
 
 
 @app.route("/v3/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
 def sleep_echo_3(num: str, msg: str):
-    start = time.time()
-    n = float(num)
-    while time.time() - start < n:
-        app.logger.debug("Sleeping")
-        time.sleep(0.1)
-    return msg
-
-
-@app.route("/v4/sleep/<string:num>/echo/<string:msg>")
-@exceptional_timeout(1)
-def sleep_echo_4(num: str, msg: str):
-    start = time.time()
-    n = float(num)
-    while time.time() - start < n:
-        app.logger.debug("Spinning")
+    """With exceptional timeout."""
+    time.sleep(float(num))
+    app.logger.debug("Slept")  # won't execute after timeout
     return msg
 
 
@@ -47,7 +37,7 @@ lock = False
 def get_lock():
     global lock
     while lock:
-        time.sleep(0.1)
+        pass
     lock = True
     return lock
 
@@ -58,21 +48,23 @@ def release_lock():
     return lock
 
 
-@app.route("/v5/sleep/<string:num>/echo/<string:msg>")
+@app.route("/v4/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_5(num: str, msg: str):
+def sleep_echo_4(num: str, msg: str):
+    """With exceptional timeout and unsafe lock."""
     get_lock()
     time.sleep(float(num))
-    release_lock()
+    release_lock()  # won't execute after timeout, deadlock!
     return msg
 
 
-@app.route("/v6/sleep/<string:num>/echo/<string:msg>")
+@app.route("/v5/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_6(num: str, msg: str):
+def sleep_echo_5(num: str, msg: str):
+    """With exceptional timeout and safe lock."""
     try:
         get_lock()
         time.sleep(float(num))
     finally:
-        release_lock()
+        release_lock()  # will execute after timeout, no deadlock
     return msg
