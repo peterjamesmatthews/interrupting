@@ -6,34 +6,37 @@ from timeout import exceptional_timeout, timeout
 app = Flask(__name__)
 
 
-@app.route("/v1/sleep/<int:num>/echo/<string:msg>")
-def sleep_echo_1(num: int, msg: str):
-    time.sleep(num)
+@app.route("/v1/sleep/<string:num>/echo/<string:msg>")
+def sleep_echo_1(num: str, msg: str):
+    time.sleep(float(num))
     return msg
 
 
-@app.route("/v2/sleep/<int:num>/echo/<string:msg>")
+@app.route("/v2/sleep/<string:num>/echo/<string:msg>")
 @timeout(1)
-def sleep_echo_2(num: int, msg: str):
-    time.sleep(num)
+def sleep_echo_2(num: str, msg: str):
+    time.sleep(float(num))
+    app.logger.debug("Slept")
     return msg
 
 
-@app.route("/v3/sleep/<int:num>/echo/<string:msg>")
+@app.route("/v3/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_3(num: int, msg: str):
+def sleep_echo_3(num: str, msg: str):
     start = time.time()
-    while time.time() - start < num:
+    n = float(num)
+    while time.time() - start < n:
         app.logger.debug("Sleeping")
         time.sleep(0.1)
     return msg
 
 
-@app.route("/v4/sleep/<int:num>/echo/<string:msg>")
+@app.route("/v4/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_4(num: int, msg: str):
+def sleep_echo_4(num: str, msg: str):
     start = time.time()
-    while time.time() - start < num:
+    n = float(num)
+    while time.time() - start < n:
         app.logger.debug("Spinning")
     return msg
 
@@ -55,21 +58,21 @@ def release_lock():
     return lock
 
 
-@app.route("/v5/sleep/<int:num>/echo/<string:msg>")
+@app.route("/v5/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_5(num: int, msg: str):
+def sleep_echo_5(num: str, msg: str):
     get_lock()
-    time.sleep(num)
+    time.sleep(float(num))
     release_lock()
     return msg
 
 
-@app.route("/v6/sleep/<int:num>/echo/<string:msg>")
+@app.route("/v6/sleep/<string:num>/echo/<string:msg>")
 @exceptional_timeout(1)
-def sleep_echo_6(num: int, msg: str):
+def sleep_echo_6(num: str, msg: str):
     try:
         get_lock()
-        time.sleep(num)
+        time.sleep(float(num))
     finally:
         release_lock()
     return msg
